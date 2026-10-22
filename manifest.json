@@ -1,0 +1,43 @@
+{
+  "name": "VitalPet - Gestão Clínica e Nutricional Veterinária",
+  "short_name": "VitalPet",
+  "description": "Solução clínica e nutricional veterinária para cães e gatos (WSAVA, NRC, Sintomas, Peso e Emergências)",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#004D40",
+  "theme_color": "#00695C",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["medical", "health", "lifestyle", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Diário Clínico",
+      "url": "./index.html#symptoms",
+      "description": "Registar sintomas e fezes"
+    },
+    {
+      "name": "Calculadora WSAVA",
+      "url": "./index.html#calculator",
+      "description": "Calcular calorias e doses de ração"
+    },
+    {
+      "name": "Emergências",
+      "url": "./index.html#emergency",
+      "description": "Protocolos de socorro imediato"
+    }
+  ]
+}
