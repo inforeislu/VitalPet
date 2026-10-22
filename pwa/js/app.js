@@ -122,7 +122,12 @@ const PetStore = {
         this.savePets(DEFAULT_SAMPLE_PETS);
         return DEFAULT_SAMPLE_PETS;
       }
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        this.savePets(DEFAULT_SAMPLE_PETS);
+        return DEFAULT_SAMPLE_PETS;
+      }
+      return parsed;
     } catch (e) {
       console.error('[PetStore] Error reading pets', e);
       return DEFAULT_SAMPLE_PETS;
@@ -147,12 +152,16 @@ const PetStore = {
     const pets = this.getPets();
     pets.push(newPet);
     this.savePets(pets);
+    selectedPetId = newPet.id;
     renderAllViews();
   },
 
   deletePet(id) {
     const pets = this.getPets().filter(p => p.id !== id);
     this.savePets(pets);
+    if (selectedPetId === id) {
+      selectedPetId = pets.length > 0 ? pets[0].id : null;
+    }
     renderAllViews();
   },
 
@@ -177,6 +186,7 @@ const PetStore = {
       const parsed = JSON.parse(jsonString);
       if (parsed.pets && Array.isArray(parsed.pets)) {
         this.savePets(parsed.pets);
+        selectedPetId = parsed.pets[0]?.id || null;
         renderAllViews();
         alert(t('Importação concluída com sucesso!'));
       } else {
@@ -266,85 +276,91 @@ function renderDashboard() {
   const pets = PetStore.getPets();
   
   // Estatísticas Globais
-  document.getElementById('stat-total-pets').textContent = pets.length;
+  const statTotalPets = document.getElementById('stat-total-pets');
+  if (statTotalPets) statTotalPets.textContent = pets.length;
+  
   const totalLogs = pets.reduce((sum, p) => sum + (p.weightLogs?.length || 0) + (p.symptomLogs?.length || 0), 0);
-  document.getElementById('stat-total-logs').textContent = totalLogs;
+  const statTotalLogs = document.getElementById('stat-total-logs');
+  if (statTotalLogs) statTotalLogs.textContent = totalLogs;
+
   const totalWalks = pets.reduce((sum, p) => sum + (p.walkSessions?.length || 0), 0);
-  document.getElementById('stat-total-walks').textContent = totalWalks;
+  const statTotalWalks = document.getElementById('stat-total-walks');
+  if (statTotalWalks) statTotalWalks.textContent = totalWalks;
 
   // Alertas Clínicos
   const alertsContainer = document.getElementById('dash-alerts-container');
-  alertsContainer.innerHTML = '';
-  const now = new Date();
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000);
-  const threeDaysAgo = new Date(Date.now() - 3 * 86400000);
+  if (alertsContainer) {
+    alertsContainer.innerHTML = '';
+    const now = new Date();
+    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000);
+    const threeDaysAgo = new Date(Date.now() - 3 * 86400000);
 
-  let alertCount = 0;
-  pets.forEach(pet => {
-    // Vómitos recentes
-    const recentSymptoms = (pet.symptomLogs || []).filter(s => new Date(s.date) >= sevenDaysAgo);
-    const vomitingCount = recentSymptoms.reduce((acc, s) => acc + (s.vomitingEpisodes || 0), 0);
-    if (vomitingCount >= 3) {
-      alertsContainer.innerHTML += `
-        <div class="alert-banner alert-high">
-          <span>⚠️</span>
-          <div><strong>${pet.name}</strong>: ${t('Vómitos recorrentes nos últimos 7 dias.')} (${vomitingCount}x)</div>
-        </div>`;
-      alertCount++;
-    }
-
-    // Diarreia 3 dias
-    const diarrhea = (pet.symptomLogs || []).filter(s => new Date(s.date) >= threeDaysAgo).some(s => s.fecalScore >= 6);
-    if (diarrhea) {
-      alertsContainer.innerHTML += `
-        <div class="alert-banner alert-high">
-          <span>⚠️</span>
-          <div><strong>${pet.name}</strong>: ${t('Score fecal elevado nos últimos 3 dias.')}</div>
-        </div>`;
-      alertCount++;
-    }
-
-    // Vacinas em atraso
-    (pet.vaccineLogs || []).forEach(vac => {
-      if (vac.nextDueDate && new Date(vac.nextDueDate) < now) {
+    let alertCount = 0;
+    pets.forEach(pet => {
+      const recentSymptoms = (pet.symptomLogs || []).filter(s => new Date(s.date) >= sevenDaysAgo);
+      const vomitingCount = recentSymptoms.reduce((acc, s) => acc + (s.vomitingEpisodes || 0), 0);
+      if (vomitingCount >= 3) {
         alertsContainer.innerHTML += `
-          <div class="alert-banner alert-medium">
-            <span>💉</span>
-            <div><strong>${pet.name}</strong>: ${t('Vacina')} "${vac.vaccineName}" (${t('Em atraso')})</div>
+          <div class="alert-banner alert-high">
+            <span>⚠️</span>
+            <div><strong>${pet.name}</strong>: ${t('Vómitos recorrentes nos últimos 7 dias.')} (${vomitingCount}x)</div>
           </div>`;
         alertCount++;
       }
-    });
-  });
 
-  if (alertCount === 0) {
-    alertsContainer.innerHTML = `
-      <div style="padding: 12px; background: rgba(102, 187, 106, 0.1); border-radius: var(--radius-md); color: #81C784; font-size: 13px;">
-        ✓ ${t('Sem alertas clínicos críticos no momento.')}
-      </div>`;
+      const diarrhea = (pet.symptomLogs || []).filter(s => new Date(s.date) >= threeDaysAgo).some(s => s.fecalScore >= 6);
+      if (diarrhea) {
+        alertsContainer.innerHTML += `
+          <div class="alert-banner alert-high">
+            <span>⚠️</span>
+            <div><strong>${pet.name}</strong>: ${t('Score fecal elevado nos últimos 3 dias.')}</div>
+          </div>`;
+        alertCount++;
+      }
+
+      (pet.vaccineLogs || []).forEach(vac => {
+        if (vac.nextDueDate && new Date(vac.nextDueDate) < now) {
+          alertsContainer.innerHTML += `
+            <div class="alert-banner alert-medium">
+              <span>💉</span>
+              <div><strong>${pet.name}</strong>: ${t('Vacina')} "${vac.vaccineName}" (${t('Em atraso')})</div>
+            </div>`;
+          alertCount++;
+        }
+      });
+    });
+
+    if (alertCount === 0) {
+      alertsContainer.innerHTML = `
+        <div style="padding: 12px; background: rgba(102, 187, 106, 0.1); border-radius: var(--radius-md); color: #81C784; font-size: 13px;">
+          ✓ ${t('Sem alertas clínicos críticos no momento.')}
+        </div>`;
+    }
   }
 
   // Lista de Pets no Dashboard
   const dashPetsList = document.getElementById('dash-pets-grid');
-  dashPetsList.innerHTML = '';
-  pets.forEach(pet => {
-    const rer = Clinical.calculateRER(pet.currentWeightKg);
-    dashPetsList.innerHTML += `
-      <div class="stat-card" onclick="selectPet('${pet.id}'); switchTab('weight');">
-        <div class="stat-icon" style="background: rgba(0, 137, 123, 0.2); color: var(--primary-light); font-size: 20px;">
-          ${pet.species === 'CAT' ? '🐱' : '🐶'}
-        </div>
-        <div class="stat-info" style="flex:1;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="font-size: 16px; font-weight: 700;">${pet.name}</h3>
-            <span class="tag-badge" style="background: var(--primary-soft); color: var(--primary-light);">${pet.breed || pet.species}</span>
+  if (dashPetsList) {
+    dashPetsList.innerHTML = '';
+    pets.forEach(pet => {
+      const rer = Clinical.calculateRER(pet.currentWeightKg);
+      dashPetsList.innerHTML += `
+        <div class="stat-card" style="cursor:pointer;" onclick="selectPet('${pet.id}'); switchTab('weight');">
+          <div class="stat-icon" style="background: rgba(0, 137, 123, 0.2); color: var(--primary-light); font-size: 20px;">
+            ${pet.species === 'CAT' ? '🐱' : '🐶'}
           </div>
-          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-            ${t('Peso Atual')}: <strong>${pet.currentWeightKg.toFixed(1)} kg</strong> | RER: <strong>${rer} kcal</strong>
+          <div class="stat-info" style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3 style="font-size: 16px; font-weight: 700;">${pet.name}</h3>
+              <span class="tag-badge" style="background: var(--primary-soft); color: var(--primary-light);">${pet.breed || pet.species}</span>
+            </div>
+            <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+              ${t('Peso Atual')}: <strong>${pet.currentWeightKg.toFixed(1)} kg</strong> | RER: <strong>${rer} kcal</strong>
+            </div>
           </div>
-        </div>
-      </div>`;
-  });
+        </div>`;
+    });
+  }
 }
 
 function selectPet(id) {
@@ -355,200 +371,271 @@ function selectPet(id) {
 function renderPetsView() {
   const pets = PetStore.getPets();
   const container = document.getElementById('pets-list-container');
+  if (!container) return;
   container.innerHTML = '';
+
+  if (pets.length === 0) {
+    container.innerHTML = `
+      <div class="panel" style="text-align:center; padding:48px;">
+        <div style="font-size:40px; margin-bottom:12px;">🐾</div>
+        <h3 style="font-size:18px; font-weight:700; margin-bottom:8px;">${t('Registe primeiro um pet.')}</h3>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Adicione o seu cão ou gato para começar a acompanhar o peso, sintomas e nutrição.</p>
+        <button class="btn btn-primary" onclick="openModal('modal-add-pet')">
+          <span>+</span> ${t('Adicionar Pet')}
+        </button>
+      </div>`;
+    return;
+  }
 
   pets.forEach(pet => {
     container.innerHTML += `
       <div class="panel" style="margin-bottom: 16px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div style="display:flex; gap:16px;">
-            <div class="pet-chip-avatar" style="width:48px; height:48px; font-size:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="pet-chip-avatar" style="width:52px; height:52px; font-size:24px;">
               ${pet.species === 'CAT' ? '🐱' : '🐶'}
             </div>
             <div>
-              <h2 style="font-size:18px; font-weight:800;">${pet.name}</h2>
-              <div style="color:var(--text-muted); font-size:13px;">${pet.breed} • ${pet.neutered ? t('Esterilizado') : t('Inteiro')}</div>
-              <div style="margin-top:6px; font-size:13px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h2 style="font-size:20px; font-weight:800;">${pet.name}</h2>
+                <span class="tag-badge" style="background:var(--primary-soft); color:var(--primary-light);">${pet.breed || pet.species}</span>
+              </div>
+              <div style="color:var(--text-muted); font-size:13px; margin-top:2px;">
+                ${pet.neutered ? t('Esterilizado') : t('Inteiro')} • ${pet.activityLevel || 'Normal'}
+              </div>
+              <div style="margin-top:6px; font-size:13.5px;">
                 ${t('Peso Atual')}: <strong>${pet.currentWeightKg} kg</strong> | ${t('Peso Alvo')}: <strong>${pet.targetWeightKg || '--'} kg</strong>
               </div>
             </div>
           </div>
-          <button class="btn btn-danger" onclick="PetStore.deletePet('${pet.id}')">${t('Eliminar')}</button>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline" onclick="selectPet('${pet.id}'); switchTab('weight');">
+              📈 ${t('Curva de Peso')}
+            </button>
+            <button class="btn btn-danger" onclick="if(confirm('${t('Eliminar')} ${pet.name}?')) PetStore.deletePet('${pet.id}')">
+              ${t('Eliminar')}
+            </button>
+          </div>
         </div>
       </div>`;
   });
 }
 
 function renderWeightView(pet) {
-  if (!pet) return;
-  document.getElementById('weight-pet-name').textContent = pet.name;
-  
-  // Render Selector Chips
+  const nameEl = document.getElementById('weight-pet-name');
   const chips = document.getElementById('weight-pet-chips');
-  chips.innerHTML = '';
-  PetStore.getPets().forEach(p => {
-    chips.innerHTML += `
-      <div class="pet-chip-item ${p.id === pet.id ? 'active' : ''}" onclick="selectPet('${p.id}')">
-        <span>${p.species === 'CAT' ? '🐱' : '🐶'}</span>
-        <span style="font-weight:600;">${p.name}</span>
-      </div>`;
-  });
-
-  const logs = (pet.weightLogs || []).sort((a, b) => new Date(a.date) - new Date(b.date));
-  
-  // Render SVG Chart
   const svg = document.getElementById('weight-chart-svg');
-  if (logs.length >= 2) {
-    const minW = Math.min(...logs.map(l => l.weightKg)) - 0.5;
-    const maxW = Math.max(...logs.map(l => l.weightKg)) + 0.5;
-    const range = (maxW - minW) || 1;
-    const w = 600;
-    const h = 200;
-
-    let points = logs.map((l, i) => {
-      const x = 30 + (i / (logs.length - 1)) * (w - 60);
-      const y = h - 20 - ((l.weightKg - minW) / range) * (h - 40);
-      return `${x},${y}`;
-    }).join(' ');
-
-    svg.innerHTML = `
-      <polyline fill="none" stroke="rgba(77, 182, 172, 0.2)" stroke-width="2" points="${points}" />
-      <polyline fill="none" stroke="#00897B" stroke-width="3" points="${points}" />
-      ${logs.map((l, i) => {
-        const x = 30 + (i / (logs.length - 1)) * (w - 60);
-        const y = h - 20 - ((l.weightKg - minW) / range) * (h - 40);
-        return `<circle cx="${x}" cy="${y}" r="4" fill="#4DB6AC" stroke="#FFFFFF" stroke-width="2" />`;
-      }).join('')}
-    `;
-  } else {
-    svg.innerHTML = `<text x="50%" y="50%" fill="#94A3B8" text-anchor="middle">${t('Mínimo 2 registos de peso para visualizar gráfico.')}</text>`;
-  }
-
-  // Render Log Table
   const list = document.getElementById('weight-logs-list');
-  list.innerHTML = '';
-  logs.slice().reverse().forEach(log => {
-    const d = new Date(log.date).toLocaleDateString();
-    list.innerHTML += `
-      <div class="log-card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <span style="font-size:16px; font-weight:800; color:var(--primary-light);">${log.weightKg.toFixed(2)} kg</span>
-            <span style="font-size:12px; color:var(--text-muted); margin-left:12px;">${d}</span>
-          </div>
-          <div style="font-size:12px; color:var(--text-muted);">${log.notes || ''}</div>
-        </div>
-      </div>`;
-  });
-}
 
-function renderSymptomsView(pet) {
-  if (!pet) return;
-  document.getElementById('symptoms-pet-name').textContent = pet.name;
-  
-  // Chips
-  const chips = document.getElementById('symptoms-pet-chips');
-  chips.innerHTML = '';
-  PetStore.getPets().forEach(p => {
-    chips.innerHTML += `
-      <div class="pet-chip-item ${p.id === pet.id ? 'active' : ''}" onclick="selectPet('${p.id}')">
-        <span>${p.species === 'CAT' ? '🐱' : '🐶'}</span>
-        <span style="font-weight:600;">${p.name}</span>
-      </div>`;
-  });
-
-  const list = document.getElementById('symptoms-logs-list');
-  list.innerHTML = '';
-  const symptoms = (pet.symptomLogs || []).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  if (symptoms.length === 0) {
-    list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-dim);">${t('Sem registos')}</div>`;
+  if (!pet) {
+    if (nameEl) nameEl.textContent = t('Meus Pets');
+    if (chips) chips.innerHTML = `<div style="color:var(--text-muted); font-size:13px;">${t('Registe primeiro um pet.')}</div>`;
+    if (svg) svg.innerHTML = `<text x="50%" y="50%" fill="#94A3B8" text-anchor="middle">${t('Registe primeiro um pet.')}</text>`;
+    if (list) list.innerHTML = '';
     return;
   }
 
-  symptoms.forEach(log => {
-    const d = new Date(log.date).toLocaleString();
-    const scoreDesc = Clinical.fecalScoreDescription(log.fecalScore);
-    const badgeColor = log.fecalScore >= 6 ? 'var(--danger-soft)' : log.fecalScore >= 4 ? 'var(--warning-soft)' : 'var(--success-soft)';
-    const textColor = log.fecalScore >= 6 ? 'var(--danger)' : log.fecalScore >= 4 ? 'var(--warning)' : 'var(--success)';
+  if (nameEl) nameEl.textContent = pet.name;
+  
+  if (chips) {
+    chips.innerHTML = '';
+    PetStore.getPets().forEach(p => {
+      chips.innerHTML += `
+        <div class="pet-chip-item ${p.id === pet.id ? 'active' : ''}" onclick="selectPet('${p.id}')">
+          <span>${p.species === 'CAT' ? '🐱' : '🐶'}</span>
+          <span style="font-weight:600;">${p.name}</span>
+        </div>`;
+    });
+  }
 
-    list.innerHTML += `
-      <div class="log-card">
-        <div class="log-card-header">
-          <span style="font-size:12px; color:var(--text-muted);">${d}</span>
-          <span class="tag-badge" style="background:${badgeColor}; color:${textColor};">
-            ${t('Score Fecal WSAVA')} ${log.fecalScore}/7
-          </span>
-        </div>
-        <div style="font-size:13px; font-weight:600; margin-bottom:6px;">${scoreDesc}</div>
-        <div style="display:flex; gap:8px; font-size:12px; color:var(--text-muted); margin-bottom:8px;">
-          <span>${t('Apetite')}: <strong>${t(log.appetite || 'NORMAL')}</strong></span> •
-          <span>${t('Energia')}: <strong>${t(log.energyLevel || 'NORMAL')}</strong></span> •
-          <span>${t('Consumo de Água')}: <strong>${t(log.waterIntake || 'NORMAL')}</strong></span>
-          ${log.vomitingEpisodes > 0 ? `• <span style="color:var(--danger); font-weight:bold;">${t('Vómito')}: ${log.vomitingEpisodes}x</span>` : ''}
-        </div>
-        ${log.notes ? `<div style="font-size:12px; background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:var(--radius-sm);">📝 ${log.notes}</div>` : ''}
-      </div>`;
-  });
+  const logs = (pet.weightLogs || []).sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  if (svg) {
+    if (logs.length >= 2) {
+      const minW = Math.min(...logs.map(l => l.weightKg)) - 0.5;
+      const maxW = Math.max(...logs.map(l => l.weightKg)) + 0.5;
+      const range = (maxW - minW) || 1;
+      const w = 600;
+      const h = 200;
+
+      let points = logs.map((l, i) => {
+        const x = 30 + (i / (logs.length - 1)) * (w - 60);
+        const y = h - 20 - ((l.weightKg - minW) / range) * (h - 40);
+        return `${x},${y}`;
+      }).join(' ');
+
+      svg.innerHTML = `
+        <polyline fill="none" stroke="rgba(77, 182, 172, 0.2)" stroke-width="2" points="${points}" />
+        <polyline fill="none" stroke="#00897B" stroke-width="3" points="${points}" />
+        ${logs.map((l, i) => {
+          const x = 30 + (i / (logs.length - 1)) * (w - 60);
+          const y = h - 20 - ((l.weightKg - minW) / range) * (h - 40);
+          return `<circle cx="${x}" cy="${y}" r="4" fill="#4DB6AC" stroke="#FFFFFF" stroke-width="2" />`;
+        }).join('')}
+      `;
+    } else {
+      svg.innerHTML = `<text x="50%" y="50%" fill="#94A3B8" text-anchor="middle">${t('Mínimo 2 registos de peso para visualizar gráfico.')}</text>`;
+    }
+  }
+
+  if (list) {
+    list.innerHTML = '';
+    logs.slice().reverse().forEach(log => {
+      const d = new Date(log.date).toLocaleDateString();
+      list.innerHTML += `
+        <div class="log-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <span style="font-size:16px; font-weight:800; color:var(--primary-light);">${log.weightKg.toFixed(2)} kg</span>
+              <span style="font-size:12px; color:var(--text-muted); margin-left:12px;">${d}</span>
+            </div>
+            <div style="font-size:12px; color:var(--text-muted);">${log.notes || ''}</div>
+          </div>
+        </div>`;
+    });
+  }
+}
+
+function renderSymptomsView(pet) {
+  const nameEl = document.getElementById('symptoms-pet-name');
+  const chips = document.getElementById('symptoms-pet-chips');
+  const list = document.getElementById('symptoms-logs-list');
+
+  if (!pet) {
+    if (nameEl) nameEl.textContent = t('Meus Pets');
+    if (chips) chips.innerHTML = `<div style="color:var(--text-muted); font-size:13px;">${t('Registe primeiro um pet.')}</div>`;
+    if (list) list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-dim);">${t('Sem registos')}</div>`;
+    return;
+  }
+
+  if (nameEl) nameEl.textContent = pet.name;
+  
+  if (chips) {
+    chips.innerHTML = '';
+    PetStore.getPets().forEach(p => {
+      chips.innerHTML += `
+        <div class="pet-chip-item ${p.id === pet.id ? 'active' : ''}" onclick="selectPet('${p.id}')">
+          <span>${p.species === 'CAT' ? '🐱' : '🐶'}</span>
+          <span style="font-weight:600;">${p.name}</span>
+        </div>`;
+    });
+  }
+
+  if (list) {
+    list.innerHTML = '';
+    const symptoms = (pet.symptomLogs || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (symptoms.length === 0) {
+      list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-dim);">${t('Sem registos')}</div>`;
+      return;
+    }
+
+    symptoms.forEach(log => {
+      const d = new Date(log.date).toLocaleString();
+      const scoreDesc = Clinical.fecalScoreDescription(log.fecalScore);
+      const badgeColor = log.fecalScore >= 6 ? 'var(--danger-soft)' : log.fecalScore >= 4 ? 'var(--warning-soft)' : 'var(--success-soft)';
+      const textColor = log.fecalScore >= 6 ? 'var(--danger)' : log.fecalScore >= 4 ? 'var(--warning)' : 'var(--success)';
+
+      list.innerHTML += `
+        <div class="log-card">
+          <div class="log-card-header">
+            <span style="font-size:12px; color:var(--text-muted);">${d}</span>
+            <span class="tag-badge" style="background:${badgeColor}; color:${textColor};">
+              ${t('Score Fecal WSAVA')} ${log.fecalScore}/7
+            </span>
+          </div>
+          <div style="font-size:13px; font-weight:600; margin-bottom:6px;">${scoreDesc}</div>
+          <div style="display:flex; gap:8px; font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+            <span>${t('Apetite')}: <strong>${t(log.appetite || 'NORMAL')}</strong></span> •
+            <span>${t('Energia')}: <strong>${t(log.energyLevel || 'NORMAL')}</strong></span> •
+            <span>${t('Consumo de Água')}: <strong>${t(log.waterIntake || 'NORMAL')}</strong></span>
+            ${log.vomitingEpisodes > 0 ? `• <span style="color:var(--danger); font-weight:bold;">${t('Vómito')}: ${log.vomitingEpisodes}x</span>` : ''}
+          </div>
+          ${log.notes ? `<div style="font-size:12px; background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:var(--radius-sm);">📝 ${log.notes}</div>` : ''}
+        </div>`;
+    });
+  }
 }
 
 function renderWalksView(pet) {
-  if (!pet) return;
-  document.getElementById('walks-pet-name').textContent = pet.name;
-  
+  const nameEl = document.getElementById('walks-pet-name');
   const chips = document.getElementById('walks-pet-chips');
-  chips.innerHTML = '';
-  PetStore.getPets().forEach(p => {
-    chips.innerHTML += `
-      <div class="pet-chip-item ${p.id === pet.id ? 'active' : ''}" onclick="selectPet('${p.id}')">
-        <span>${p.species === 'CAT' ? '🐱' : '🐶'}</span>
-        <span style="font-weight:600;">${p.name}</span>
-      </div>`;
-  });
-
   const list = document.getElementById('walks-logs-list');
-  list.innerHTML = '';
-  const walks = (pet.walkSessions || []).sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  walks.forEach(wk => {
-    const mins = Math.round(wk.durationSeconds / 60);
-    const d = new Date(wk.date).toLocaleDateString();
-    list.innerHTML += `
-      <div class="log-card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="font-size:15px; font-weight:700;">🐾 ${mins} minutos (${wk.intensity || 'MODERATE'})</div>
-            <div style="font-size:12px; color:var(--text-muted);">${d} • ${(wk.distanceMeters || 0) / 1000} km</div>
+  if (!pet) {
+    if (nameEl) nameEl.textContent = t('Meus Pets');
+    if (chips) chips.innerHTML = `<div style="color:var(--text-muted); font-size:13px;">${t('Registe primeiro um pet.')}</div>`;
+    if (list) list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-dim);">${t('Sem registos')}</div>`;
+    return;
+  }
+
+  if (nameEl) nameEl.textContent = pet.name;
+  
+  if (chips) {
+    chips.innerHTML = '';
+    PetStore.getPets().forEach(p => {
+      chips.innerHTML += `
+        <div class="pet-chip-item ${p.id === pet.id ? 'active' : ''}" onclick="selectPet('${p.id}')">
+          <span>${p.species === 'CAT' ? '🐱' : '🐶'}</span>
+          <span style="font-weight:600;">${p.name}</span>
+        </div>`;
+    });
+  }
+
+  if (list) {
+    list.innerHTML = '';
+    const walks = (pet.walkSessions || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (walks.length === 0) {
+      list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-dim);">${t('Sem registos')}</div>`;
+      return;
+    }
+
+    walks.forEach(wk => {
+      const mins = Math.round(wk.durationSeconds / 60);
+      const d = new Date(wk.date).toLocaleDateString();
+      list.innerHTML += `
+        <div class="log-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:15px; font-weight:700;">🐾 ${mins} minutos (${wk.intensity || 'MODERATE'})</div>
+              <div style="font-size:12px; color:var(--text-muted);">${d} • ${(wk.distanceMeters || 0) / 1000} km</div>
+            </div>
+            <div style="font-size:16px; font-weight:800; color:var(--accent);">🔥 ${Math.round(wk.caloriesBurned)} kcal</div>
           </div>
-          <div style="font-size:16px; font-weight:800; color:var(--accent);">🔥 ${Math.round(wk.caloriesBurned)} kcal</div>
-        </div>
-      </div>`;
-  });
+        </div>`;
+    });
+  }
 }
 
 function renderCalculatorView(pet) {
-  if (!pet) return;
   const weightInput = document.getElementById('calc-weight');
-  if (weightInput && !weightInput.value) {
+  if (weightInput && pet && (!weightInput.value || weightInput.value === '10')) {
     weightInput.value = pet.currentWeightKg;
   }
   recomputeNutrition();
 }
 
 function recomputeNutrition() {
-  const weight = parseFloat(document.getElementById('calc-weight')?.value) || 10;
+  const weightInput = document.getElementById('calc-weight');
+  const weight = parseFloat(weightInput?.value) || 10;
   const species = document.getElementById('calc-species')?.value || 'DOG';
   const stage = document.getElementById('calc-stage')?.value || 'MAINTENANCE';
   const neutered = document.getElementById('calc-neutered')?.value === 'true';
-  const kcalPerKg = parseFloat(document.getElementById('calc-kcal')?.value) || 3700;
+  const kcalPerKg = parseFloat(document.getElementById('calc-kcal')?.value) || 3750;
 
   const result = Clinical.calculateDER(weight, species, stage, neutered);
   const grams = Clinical.calculateFoodGrams(result.der, kcalPerKg);
 
-  document.getElementById('calc-rer-val').textContent = `${result.rer} kcal/dia`;
-  document.getElementById('calc-factor-val').textContent = `${result.factor}x`;
-  document.getElementById('calc-der-val').textContent = `${result.der} kcal/dia`;
-  document.getElementById('calc-grams-val').textContent = `${grams} g/dia`;
+  const rerEl = document.getElementById('calc-rer-val');
+  const factorEl = document.getElementById('calc-factor-val');
+  const derEl = document.getElementById('calc-der-val');
+  const gramsEl = document.getElementById('calc-grams-val');
+
+  if (rerEl) rerEl.textContent = `${result.rer} kcal/dia`;
+  if (factorEl) factorEl.textContent = `${result.factor}x`;
+  if (derEl) derEl.textContent = `${result.der} kcal/dia`;
+  if (gramsEl) gramsEl.textContent = `${grams} g/dia`;
 }
 
 // --------------------------------------------------------------------------
@@ -575,11 +662,48 @@ function switchTab(tabId) {
 // 6. Modal Dialogs & Actions
 // --------------------------------------------------------------------------
 function openModal(id) {
-  document.getElementById(id).classList.add('open');
+  const modal = document.getElementById(id);
+  if (modal) modal.classList.add('open');
 }
 
 function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
+  const modal = document.getElementById(id);
+  if (modal) modal.classList.remove('open');
+}
+
+function saveNewPet() {
+  const name = document.getElementById('new-pet-name')?.value.trim();
+  const species = document.getElementById('new-pet-species')?.value || 'DOG';
+  const breed = document.getElementById('new-pet-breed')?.value.trim() || (species === 'CAT' ? 'Gato' : 'Cão');
+  const weight = parseFloat(document.getElementById('new-pet-weight')?.value) || 5.0;
+  const targetWeight = parseFloat(document.getElementById('new-pet-target-weight')?.value) || weight;
+  const neutered = document.getElementById('new-pet-neutered')?.value === 'true';
+
+  if (!name) {
+    alert(t('Nome'));
+    return;
+  }
+
+  const newPet = {
+    id: 'pet_' + Date.now(),
+    name: name,
+    species: species,
+    breed: breed,
+    birthDate: new Date().toISOString().slice(0, 10),
+    currentWeightKg: weight,
+    targetWeightKg: targetWeight,
+    neutered: neutered,
+    activityLevel: 'MODERATE',
+    weightLogs: [
+      { id: 'w_' + Date.now(), date: new Date().toISOString(), weightKg: weight, notes: 'Registo inicial' }
+    ],
+    symptomLogs: [],
+    walkSessions: [],
+    vaccineLogs: []
+  };
+
+  PetStore.addPet(newPet);
+  closeModal('modal-add-pet');
 }
 
 function saveWeightLog() {
@@ -627,8 +751,7 @@ function saveSymptomLog() {
 // --------------------------------------------------------------------------
 // 7. Initialization & PWA Support
 // --------------------------------------------------------------------------
-window.addEventListener('DOMContentLoaded', async () => {
-  // Populate Language Selector
+function init() {
   const selector = document.getElementById('language-select');
   if (selector) {
     selector.innerHTML = LANGUAGES.map(l => 
@@ -637,18 +760,16 @@ window.addEventListener('DOMContentLoaded', async () => {
     selector.addEventListener('change', (e) => setLanguage(e.target.value));
   }
 
-  // Load translations & render
-  await loadTranslations();
-  renderAllViews();
+  loadTranslations().then(() => {
+    renderAllViews();
+  });
 
-  // Register Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
       .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
       .catch(err => console.warn('[PWA] Service Worker registration failed:', err));
   }
 
-  // Install PWA Prompt
   let deferredPrompt;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -665,4 +786,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       });
     }
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

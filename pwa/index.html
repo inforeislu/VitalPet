@@ -97,7 +97,7 @@
         </div>
         <div class="header-actions">
           <button id="pwa-install-btn" class="btn btn-primary" style="display:none;">
-            <span>⬇️</span> <span data-i18n="Instalar Aplicação">Instalar PWA</span>
+            <span>⬇️</span> <span data-i18n="Instalar PWA">Instalar PWA</span>
           </button>
         </div>
       </header>
@@ -145,8 +145,11 @@
 
         <!-- Tab 2: Pets View -->
         <section id="tab-pets" class="tab-page">
-          <div class="panel-header" style="margin-bottom:20px;">
+          <div class="panel-header" style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
             <h2 data-i18n="Meus Pets">Meus Pets</h2>
+            <button class="btn btn-primary" onclick="openModal('modal-add-pet')">
+              <span>+</span> <span data-i18n="Adicionar Pet">Adicionar Pet</span>
+            </button>
           </div>
           <div id="pets-list-container"></div>
         </section>
@@ -213,7 +216,7 @@
         <section id="tab-calculator" class="tab-page">
           <div class="split-layout">
             <div class="panel">
-              <h3 class="panel-title" style="margin-bottom:16px;" data-i18n="Calculadora Nutricional">Parâmetros WSAVA</h3>
+              <h3 class="panel-title" style="margin-bottom:16px;" data-i18n="Parâmetros WSAVA">Parâmetros WSAVA</h3>
               <div class="form-group" style="margin-bottom:12px;">
                 <label data-i18n="Peso Atual">Peso (kg)</label>
                 <input id="calc-weight" type="number" step="0.1" class="form-input" value="10" oninput="recomputeNutrition()">
@@ -221,28 +224,28 @@
               <div class="form-group" style="margin-bottom:12px;">
                 <label data-i18n="Espécie">Espécie</label>
                 <select id="calc-species" class="form-select" onchange="recomputeNutrition()">
-                  <option value="DOG">Cão (Canino)</option>
+                  <option value="DOG" selected>Cão (Canino)</option>
                   <option value="CAT">Gato (Felino)</option>
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:12px;">
-                <label data-i18n="Estado Reprodutivo">Estado Fisiológico</label>
+                <label data-i18n="Estado Fisiológico">Estado Fisiológico</label>
                 <select id="calc-stage" class="form-select" onchange="recomputeNutrition()">
-                  <option value="MAINTENANCE">Adulto Manutenção</option>
-                  <option value="WEIGHT_LOSS">Perda de Peso (Obesidade)</option>
-                  <option value="PUPPY">Cachorro / Filhote</option>
-                  <option value="SENIOR">Sénior / Geriátrico</option>
+                  <option value="MAINTENANCE" selected data-i18n="Adulto Manutenção">Adulto Manutenção</option>
+                  <option value="WEIGHT_LOSS" data-i18n="Perda de Peso (Obesidade)">Perda de Peso (Obesidade)</option>
+                  <option value="PUPPY" data-i18n="Cachorro / Filhote">Cachorro / Filhote</option>
+                  <option value="SENIOR" data-i18n="Sénior / Geriátrico">Sénior / Geriátrico</option>
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:12px;">
-                <label data-i18n="Esterilizado">Esterilizado?</label>
+                <label data-i18n="Esterilizado?">Esterilizado?</label>
                 <select id="calc-neutered" class="form-select" onchange="recomputeNutrition()">
-                  <option value="true">Sim (Castrado)</option>
-                  <option value="false">Não (Inteiro)</option>
+                  <option value="true" selected data-i18n="Sim (Castrado)">Sim (Castrado)</option>
+                  <option value="false" data-i18n="Não (Inteiro)">Não (Inteiro)</option>
                 </select>
               </div>
               <div class="form-group">
-                <label data-i18n="Densidade Calórica da Ração (kcal/kg)">Densidade Ração (kcal/kg)</label>
+                <label data-i18n="Densidade Calórica da Ração (kcal/kg)">Densidade Calórica da Ração (kcal/kg)</label>
                 <input id="calc-kcal" type="number" class="form-input" value="3750" oninput="recomputeNutrition()">
               </div>
             </div>
@@ -285,22 +288,24 @@
         <!-- Tab 7: Emergency Protocols -->
         <section id="tab-emergency" class="tab-page">
           <div class="panel">
-            <h2 style="font-size:18px; font-weight:800; color:var(--danger); margin-bottom:16px;">🚨 Protocolos de Socorro Imediato</h2>
+            <h2 style="font-size:18px; font-weight:800; color:var(--danger); margin-bottom:16px;">
+              🚨 <span data-i18n="Protocolos de Socorro Imediato">Protocolos de Socorro Imediato</span>
+            </h2>
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
               <div class="log-card" style="border-left: 4px solid var(--danger);">
-                <h3 style="font-size:15px; font-weight:700; color:#EF5350;">Intoxicação / Alimentos Tóxicos</h3>
+                <h3 style="font-size:15px; font-weight:700; color:#EF5350;" data-i18n="Intoxicação / Alimentos Tóxicos">Intoxicação / Alimentos Tóxicos</h3>
                 <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
                   Chocolate, uvas, cebola, alho ou xilitol. <strong>NÃO induzir o vómito</strong> se o animal ingeriu substâncias corrosivas ou estiver inconsciente.
                 </p>
               </div>
               <div class="log-card" style="border-left: 4px solid #FFA726;">
-                <h3 style="font-size:15px; font-weight:700; color:#FFA726;">Golpe de Calor (Hipertermia)</h3>
+                <h3 style="font-size:15px; font-weight:700; color:#FFA726;" data-i18n="Golpe de Calor (Hipertermia)">Golpe de Calor (Hipertermia)</h3>
                 <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
                   Arrefeça com água fresca a morna (NUNCA água gelada). Foque nas patas, virilha e pescoço. Dirija-se imediatamente ao hospital.
                 </p>
               </div>
               <div class="log-card" style="border-left: 4px solid #42A5F5;">
-                <h3 style="font-size:15px; font-weight:700; color:#42A5F5;">Engasgamento</h3>
+                <h3 style="font-size:15px; font-weight:700; color:#42A5F5;" data-i18n="Engasgamento">Engasgamento</h3>
                 <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
                   Abra a boca e verifique corpos estranhos visíveis. Se o animal colapsar, aplique manobra de Heimlich adaptada para cães/gatos.
                 </p>
@@ -344,18 +349,59 @@
         <span>📊</span><span data-i18n="Painel">Painel</span>
       </a>
       <a class="mobile-nav-item" data-tab="weight" onclick="switchTab('weight')">
-        <span>📈</span><span data-i18n="Peso">Peso</span>
+        <span>📈</span><span data-i18n="Curva de Peso">Peso</span>
       </a>
       <a class="mobile-nav-item" data-tab="symptoms" onclick="switchTab('symptoms')">
-        <span>🩺</span><span data-i18n="Sintomas">Sintomas</span>
+        <span>🩺</span><span data-i18n="Diário de Sintomas">Sintomas</span>
       </a>
       <a class="mobile-nav-item" data-tab="calculator" onclick="switchTab('calculator')">
         <span>🧮</span><span>WSAVA</span>
       </a>
       <a class="mobile-nav-item" data-tab="sync" onclick="switchTab('sync')">
-        <span>🔄</span><span>Sync</span>
+        <span>🔄</span><span data-i18n="Sincronização">Sync</span>
       </a>
     </nav>
+  </div>
+
+  <!-- Modal: Adicionar Pet -->
+  <div id="modal-add-pet" class="modal-overlay">
+    <div class="modal-box">
+      <h3 style="font-size:16px; font-weight:700;" data-i18n="Adicionar Pet">Adicionar Pet</h3>
+      <div class="form-group">
+        <label data-i18n="Nome">Nome</label>
+        <input id="new-pet-name" type="text" class="form-input" placeholder="Ex: Bobi, Luna">
+      </div>
+      <div class="form-group">
+        <label data-i18n="Espécie">Espécie</label>
+        <select id="new-pet-species" class="form-select">
+          <option value="DOG" selected>Cão (Canino)</option>
+          <option value="CAT">Gato (Felino)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="Raça">Raça</label>
+        <input id="new-pet-breed" type="text" class="form-input" placeholder="Ex: Labrador, Europeu Comum">
+      </div>
+      <div class="form-group">
+        <label data-i18n="Peso Atual">Peso Atual (kg)</label>
+        <input id="new-pet-weight" type="number" step="0.1" class="form-input" placeholder="Ex: 12.5">
+      </div>
+      <div class="form-group">
+        <label data-i18n="Peso Alvo">Peso Alvo (kg)</label>
+        <input id="new-pet-target-weight" type="number" step="0.1" class="form-input" placeholder="Ex: 12.0">
+      </div>
+      <div class="form-group">
+        <label data-i18n="Esterilizado?">Esterilizado?</label>
+        <select id="new-pet-neutered" class="form-select">
+          <option value="true" selected data-i18n="Sim (Castrado)">Sim (Castrado)</option>
+          <option value="false" data-i18n="Não (Inteiro)">Não (Inteiro)</option>
+        </select>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modal-add-pet')" data-i18n="Cancelar">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveNewPet()" data-i18n="Guardar">Guardar</button>
+      </div>
+    </div>
   </div>
 
   <!-- Modal: Novo Registo de Peso -->

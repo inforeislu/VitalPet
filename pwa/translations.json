@@ -21428,5 +21428,225 @@
     "it": "Primo Registro",
     "nl": "Eerste Record",
     "lb": "Éischten Aschreiwung"
+  },
+  "Sincronização": {
+    "pt": "Sincronização",
+    "en": "Synchronization",
+    "es": "Sincronización",
+    "fr": "Synchronisation",
+    "de": "Synchronisation",
+    "it": "Sincronizzazione",
+    "nl": "Synchronisatie",
+    "lb": "Synchronisatioun"
+  },
+  "Calculadora Nutricional": {
+    "pt": "Calculadora Nutricional",
+    "en": "Nutritional Calculator",
+    "es": "Calculadora Nutricional",
+    "fr": "Calculateur Nutritionnel",
+    "de": "Ernährungsrechner",
+    "it": "Calcolatore Nutrizionale",
+    "nl": "Voedingscalculator",
+    "lb": "Ernährungsrechner"
+  },
+  "Esterilizado": {
+    "pt": "Esterilizado",
+    "en": "Neutered",
+    "es": "Esterilizado",
+    "fr": "Stérilisé",
+    "de": "Kastriert",
+    "it": "Sterilizzato",
+    "nl": "Gesteriliseerd",
+    "lb": "Kastréiert"
+  },
+  "Sem alertas clínicos críticos no momento.": {
+    "pt": "Sem alertas clínicos críticos no momento.",
+    "en": "No critical clinical alerts at this time.",
+    "es": "Sin alertas clínicas críticas en este momento.",
+    "fr": "Aucune alerte clinique critique pour le moment.",
+    "de": "Zurzeit keine kritischen klinischen Warnungen.",
+    "it": "Nessun avviso clinico critico al momento.",
+    "nl": "Momenteel geen kritieke klinische waarschuwingen.",
+    "lb": "Moment keng kritesch klinesch Alarmer."
+  },
+  "Sem registos": {
+    "pt": "Sem registos",
+    "en": "No records",
+    "es": "Sin registros",
+    "fr": "Aucun enregistrement",
+    "de": "Keine Einträge",
+    "it": "Nessuna registrazione",
+    "nl": "Geen records",
+    "lb": "Keng Aschreiwungen"
+  },
+  "Vómitos recorrentes nos últimos 7 dias.": {
+    "pt": "Vómitos recorrentes nos últimos 7 dias.",
+    "en": "Recurring vomiting in the last 7 days.",
+    "es": "Vómitos recurrentes en los últimos 7 días.",
+    "fr": "Vomissements récurrents dans les 7 derniers jours.",
+    "de": "Wiederkehrendes Erbrechen in den letzten 7 Tagen.",
+    "it": "Vomito ricorrente negli ultimi 7 giorni.",
+    "nl": "Terugkerende braking in de laatste 7 dagen.",
+    "lb": "Widderholend Erbrechungen an den leschten 7 Deeg."
+  },
+  "Protocolos de Socorro Imediato": {
+    "pt": "Protocolos de Socorro Imediato",
+    "en": "Immediate Relief Protocols",
+    "es": "Protocolos de Auxilio Inmediato",
+    "fr": "Protocoles de Secours Immédiat",
+    "de": "Soforthilfe-Protokolle",
+    "it": "Protocolli di Primo Soccorso",
+    "nl": "Onmiddellijke Hulpprotocollen",
+    "lb": "Direkthëllef-Protokoller"
+  },
+  "Intoxicação / Alimentos Tóxicos": {
+    "pt": "Intoxicação / Alimentos Tóxicos",
+    "en": "Poisoning / Toxic Foods",
+    "es": "Intoxicación / Alimentos Tóxicos",
+    "fr": "Intoxication / Aliments Toxiques",
+    "de": "Vergiftung / Giftige Nahrungsmittel",
+    "it": "Intossicazione / Cibi Tossici",
+    "nl": "Vergiftiging / Giftig Voedsel",
+    "lb": "Vergëftung / Gëfteg Liewensmëttel"
+  },
+  "Engasgamento": {
+    "pt": "Engasgamento",
+    "en": "Choking",
+    "es": "Atragantamiento",
+    "fr": "Étouffement",
+    "de": "Ersticken",
+    "it": "Soffocamento",
+    "nl": "Verstikking",
+    "lb": "Erstéckung"
+  },
+  "Resultado Metabólico WSAVA": {
+    "pt": "Resultado Metabólico WSAVA",
+    "en": "WSAVA Metabolic Result",
+    "es": "Resultado Metabólico WSAVA",
+    "fr": "Résultat Métabolique WSAVA",
+    "de": "WSAVA Stoffwechselergebnis",
+    "it": "Risultato Metabolico WSAVA",
+    "nl": "WSAVA Metabool Resultaat",
+    "lb": "WSAVA Stoffwiesselresultat"
+  },
+  "Densidade Calórica da Ração (kcal/kg)": {
+    "pt": "Densidade Calórica da Ração (kcal/kg)",
+    "en": "Food Caloric Density (kcal/kg)",
+    "es": "Densidad Calórica del Pienso (kcal/kg)",
+    "fr": "Densité Calorique de l'Aliment (kcal/kg)",
+    "de": "Kaloriendichte des Futters (kcal/kg)",
+    "it": "Densità Calorica del Mangime (kcal/kg)",
+    "nl": "Caloriedichtheid van Voer (kcal/kg)",
+    "lb": "Kaloriendicht vum Fudder (kcal/kg)"
+  },
+  "Instalar Aplicação": {
+    "pt": "Instalar Aplicação",
+    "en": "Install App",
+    "es": "Instalar Aplicación",
+    "fr": "Installer l'Application",
+    "de": "App installieren",
+    "it": "Installa Applicazione",
+    "nl": "App Installeren",
+    "lb": "App Installéieren"
+  },
+  "Instalar PWA": {
+    "pt": "Instalar PWA",
+    "en": "Install PWA",
+    "es": "Instalar PWA",
+    "fr": "Installer PWA",
+    "de": "PWA installieren",
+    "it": "Installa PWA",
+    "nl": "PWA Installeren",
+    "lb": "PWA Installéieren"
+  },
+  "Parâmetros WSAVA": {
+    "pt": "Parâmetros WSAVA",
+    "en": "WSAVA Parameters",
+    "es": "Parámetros WSAVA",
+    "fr": "Paramètres WSAVA",
+    "de": "WSAVA-Parameter",
+    "it": "Parametri WSAVA",
+    "nl": "WSAVA-parameters",
+    "lb": "WSAVA-Parameteren"
+  },
+  "Estado Fisiológico": {
+    "pt": "Estado Fisiológico",
+    "en": "Physiological State",
+    "es": "Estado Fisiológico",
+    "fr": "État Physiologique",
+    "de": "Physiologischer Zustand",
+    "it": "Stato Fisiologico",
+    "nl": "Fysiologische Staat",
+    "lb": "Physiologeschen Zoustand"
+  },
+  "Esterilizado?": {
+    "pt": "Esterilizado?",
+    "en": "Neutered?",
+    "es": "¿Esterilizado?",
+    "fr": "Stérilisé ?",
+    "de": "Kastriert?",
+    "it": "Sterilizzato?",
+    "nl": "Gesteriliseerd?",
+    "lb": "Kastréiert?"
+  },
+  "Sim (Castrado)": {
+    "pt": "Sim (Castrado)",
+    "en": "Yes (Neutered)",
+    "es": "Sí (Castrado)",
+    "fr": "Oui (Stérilisé)",
+    "de": "Ja (Kastriert)",
+    "it": "Sì (Castrato)",
+    "nl": "Ja (Gesteriliseerd)",
+    "lb": "Jo (Kastréiert)"
+  },
+  "Não (Inteiro)": {
+    "pt": "Não (Inteiro)",
+    "en": "No (Intact)",
+    "es": "No (Entero)",
+    "fr": "Non (Entier)",
+    "de": "Nein (Unkastriert)",
+    "it": "No (Intero)",
+    "nl": "Nee (Intact)",
+    "lb": "Nee (Intakt)"
+  },
+  "Adulto Manutenção": {
+    "pt": "Adulto Manutenção",
+    "en": "Adult Maintenance",
+    "es": "Adulto Mantenimiento",
+    "fr": "Adulte Entretien",
+    "de": "Ausgewachsen Erhaltung",
+    "it": "Adulto Mantenimento",
+    "nl": "Volwassen Onderhoud",
+    "lb": "Erwuessen Ënnerhalt"
+  },
+  "Perda de Peso (Obesidade)": {
+    "pt": "Perda de Peso (Obesidade)",
+    "en": "Weight Loss (Obesity)",
+    "es": "Pérdida de Peso (Obesidad)",
+    "fr": "Perte de Poids (Obésité)",
+    "de": "Gewichtsverlust (Fettleibigkeit)",
+    "it": "Perdita di Peso (Obesità)",
+    "nl": "Gewichtsverlies (Obesitas)",
+    "lb": "Gewiichtsverloscht (Iwwergewiicht)"
+  },
+  "Cachorro / Filhote": {
+    "pt": "Cachorro / Filhote",
+    "en": "Puppy / Kitten",
+    "es": "Cachorro",
+    "fr": "Chiot / Chaton",
+    "de": "Welpe / Kätzchen",
+    "it": "Cucciolo",
+    "nl": "Pup / Kitten",
+    "lb": "Welpe / Kazekand"
+  },
+  "Sénior / Geriátrico": {
+    "pt": "Sénior / Geriátrico",
+    "en": "Senior / Geriatric",
+    "es": "Sénior / Geriátrico",
+    "fr": "Senior / Gériatrique",
+    "de": "Senior / Geriatrisch",
+    "it": "Senior / Geriatrico",
+    "nl": "Senior / Geriatrisch",
+    "lb": "Senior / Geriatresch"
   }
 }
