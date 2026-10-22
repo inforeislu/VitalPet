@@ -224,8 +224,8 @@
               <div class="form-group" style="margin-bottom:12px;">
                 <label data-i18n="Espécie">Espécie</label>
                 <select id="calc-species" class="form-select" onchange="recomputeNutrition()">
-                  <option value="DOG" selected>Cão (Canino)</option>
-                  <option value="CAT">Gato (Felino)</option>
+                  <option value="DOG" selected data-i18n="Cão (Canino)">Cão (Canino)</option>
+                  <option value="CAT" data-i18n="Gato (Felino)">Gato (Felino)</option>
                 </select>
               </div>
               <div class="form-group" style="margin-bottom:12px;">
@@ -294,19 +294,19 @@
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
               <div class="log-card" style="border-left: 4px solid var(--danger);">
                 <h3 style="font-size:15px; font-weight:700; color:#EF5350;" data-i18n="Intoxicação / Alimentos Tóxicos">Intoxicação / Alimentos Tóxicos</h3>
-                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
+                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;" data-i18n="Desc.Intoxicação">
                   Chocolate, uvas, cebola, alho ou xilitol. <strong>NÃO induzir o vómito</strong> se o animal ingeriu substâncias corrosivas ou estiver inconsciente.
                 </p>
               </div>
               <div class="log-card" style="border-left: 4px solid #FFA726;">
                 <h3 style="font-size:15px; font-weight:700; color:#FFA726;" data-i18n="Golpe de Calor (Hipertermia)">Golpe de Calor (Hipertermia)</h3>
-                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
+                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;" data-i18n="Desc.Golpe de Calor">
                   Arrefeça com água fresca a morna (NUNCA água gelada). Foque nas patas, virilha e pescoço. Dirija-se imediatamente ao hospital.
                 </p>
               </div>
               <div class="log-card" style="border-left: 4px solid #42A5F5;">
                 <h3 style="font-size:15px; font-weight:700; color:#42A5F5;" data-i18n="Engasgamento">Engasgamento</h3>
-                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
+                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;" data-i18n="Desc.Engasgamento">
                   Abra a boca e verifique corpos estranhos visíveis. Se o animal colapsar, aplique manobra de Heimlich adaptada para cães/gatos.
                 </p>
               </div>
@@ -318,7 +318,7 @@
         <section id="tab-sync" class="tab-page">
           <div class="panel" style="max-width:600px;">
             <h3 class="panel-title" style="margin-bottom:16px;" data-i18n="Sincronização">Sincronização e Backup Universal</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;" data-i18n="Desc.Backup">
               O VitalPet PWA é 100% compatível com a aplicação Android, iOS e Windows. Pode exportar o seu ficheiro de dados ou importar um backup gerado em qualquer dispositivo.
             </p>
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -374,8 +374,8 @@
       <div class="form-group">
         <label data-i18n="Espécie">Espécie</label>
         <select id="new-pet-species" class="form-select">
-          <option value="DOG" selected>Cão (Canino)</option>
-          <option value="CAT">Gato (Felino)</option>
+          <option value="DOG" selected data-i18n="Cão (Canino)">Cão (Canino)</option>
+          <option value="CAT" data-i18n="Gato (Felino)">Gato (Felino)</option>
         </select>
       </div>
       <div class="form-group">
@@ -446,27 +446,27 @@
       <div class="form-group">
         <label data-i18n="Apetite">Apetite</label>
         <select id="new-appetite-val" class="form-select">
-          <option value="NORMAL" selected>Normal</option>
-          <option value="DECREASED">Diminuído</option>
-          <option value="ANOREXIC">Recusa Total</option>
-          <option value="INCREASED">Aumentado (Polifagia)</option>
+          <option value="NORMAL" selected data-i18n="Normal">Normal</option>
+          <option value="DECREASED" data-i18n="Diminuído">Diminuído</option>
+          <option value="ANOREXIC" data-i18n="Recusa Total">Recusa Total</option>
+          <option value="INCREASED" data-i18n="Aumentado (Polifagia)">Aumentado (Polifagia)</option>
         </select>
       </div>
       <div class="form-group">
         <label data-i18n="Energia">Energia</label>
         <select id="new-energy-val" class="form-select">
-          <option value="NORMAL" selected>Normal</option>
-          <option value="LOW">Baixa Energia</option>
-          <option value="LETHARGIC">Letárgico / Prostrado</option>
-          <option value="HIGH">Muito Ativo / Agitado</option>
+          <option value="NORMAL" selected data-i18n="Normal">Normal</option>
+          <option value="LOW" data-i18n="Baixa Energia">Baixa Energia</option>
+          <option value="LETHARGIC" data-i18n="Letárgico / Prostrado">Letárgico / Prostrado</option>
+          <option value="HIGH" data-i18n="Muito Ativo / Agitado">Muito Ativo / Agitado</option>
         </select>
       </div>
       <div class="form-group">
         <label data-i18n="Consumo de Água">Consumo de Água</label>
         <select id="new-water-val" class="form-select">
-          <option value="NORMAL" selected>Normal</option>
-          <option value="DECREASED">Diminuição (Pouca Água)</option>
-          <option value="INCREASED">Aumento Excessivo (Polidipsia)</option>
+          <option value="NORMAL" selected data-i18n="Normal">Normal</option>
+          <option value="DECREASED" data-i18n="Diminuição (Pouca Água)">Diminuição (Pouca Água)</option>
+          <option value="INCREASED" data-i18n="Aumento Excessivo (Polidipsia)">Aumento Excessivo (Polidipsia)</option>
         </select>
       </div>
       <div class="form-group">

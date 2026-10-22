@@ -21,12 +21,22 @@ let currentLang = localStorage.getItem('vitalpet_lang') || 'pt';
 let translations = {};
 
 async function loadTranslations() {
-  try {
-    const res = await fetch('./translations.json');
-    translations = await res.json();
-    console.log(`[VitalPet] Loaded ${Object.keys(translations).length} translation keys.`);
-  } catch (e) {
-    console.warn('[VitalPet] Could not load translations.json, using fallback.', e);
+  // Try multiple paths to support both local dev and GitHub Pages deployment
+  const paths = ['./translations.json', '../translations.json', '/VitalPet/pwa/translations.json'];
+  for (const path of paths) {
+    try {
+      const res = await fetch(path, { cache: 'no-store' });
+      if (res.ok) {
+        translations = await res.json();
+        console.log(`[VitalPet] Loaded ${Object.keys(translations).length} translation keys from: ${path}`);
+        break;
+      }
+    } catch (e) {
+      // try next path
+    }
+  }
+  if (!Object.keys(translations).length) {
+    console.warn('[VitalPet] Could not load translations.json from any path. Using key fallback.');
   }
   applyTranslations();
 }
@@ -49,13 +59,26 @@ function setLanguage(langCode) {
 }
 
 function applyTranslations() {
+  // Update HTML lang attribute for accessibility
+  document.documentElement.lang = currentLang;
+
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    el.textContent = t(key);
+    const translated = t(key);
+    // For option elements, update the text content
+    if (el.tagName === 'OPTION') {
+      el.textContent = translated;
+    } else {
+      el.textContent = translated;
+    }
   });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     el.placeholder = t(key);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    el.title = t(key);
   });
 }
 
@@ -379,7 +402,7 @@ function renderPetsView() {
       <div class="panel" style="text-align:center; padding:48px;">
         <div style="font-size:40px; margin-bottom:12px;">🐾</div>
         <h3 style="font-size:18px; font-weight:700; margin-bottom:8px;">${t('Registe primeiro um pet.')}</h3>
-        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Adicione o seu cão ou gato para começar a acompanhar o peso, sintomas e nutrição.</p>
+        <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">${t('Adicione o seu cão ou gato para começar a acompanhar.')}</p>
         <button class="btn btn-primary" onclick="openModal('modal-add-pet')">
           <span>+</span> ${t('Adicionar Pet')}
         </button>
@@ -541,7 +564,7 @@ function renderSymptomsView(pet) {
           <div class="log-card-header">
             <span style="font-size:12px; color:var(--text-muted);">${d}</span>
             <span class="tag-badge" style="background:${badgeColor}; color:${textColor};">
-              ${t('Score Fecal WSAVA')} ${log.fecalScore}/7
+              ${t('Score Fecal WSAVA')}: ${log.fecalScore}/7
             </span>
           </div>
           <div style="font-size:13px; font-weight:600; margin-bottom:6px;">${scoreDesc}</div>
@@ -598,7 +621,7 @@ function renderWalksView(pet) {
         <div class="log-card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <div style="font-size:15px; font-weight:700;">🐾 ${mins} minutos (${wk.intensity || 'MODERATE'})</div>
+              <div style="font-size:15px; font-weight:700;">🐾 ${mins} ${t('minutos')} (${t(wk.intensity) || wk.intensity || 'MODERATE'})</div>
               <div style="font-size:12px; color:var(--text-muted);">${d} • ${(wk.distanceMeters || 0) / 1000} km</div>
             </div>
             <div style="font-size:16px; font-weight:800; color:var(--accent);">🔥 ${Math.round(wk.caloriesBurned)} kcal</div>
@@ -680,7 +703,7 @@ function saveNewPet() {
   const neutered = document.getElementById('new-pet-neutered')?.value === 'true';
 
   if (!name) {
-    alert(t('Nome'));
+    alert(t('Por favor, insira o nome do pet.'));
     return;
   }
 
@@ -695,7 +718,7 @@ function saveNewPet() {
     neutered: neutered,
     activityLevel: 'MODERATE',
     weightLogs: [
-      { id: 'w_' + Date.now(), date: new Date().toISOString(), weightKg: weight, notes: 'Registo inicial' }
+      { id: 'w_' + Date.now(), date: new Date().toISOString(), weightKg: weight, notes: t('Registo inicial') }
     ],
     symptomLogs: [],
     walkSessions: [],

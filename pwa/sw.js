@@ -1,5 +1,5 @@
 // VitalPet PWA Service Worker — Offline First Architecture
-const CACHE_NAME = 'vitalpet-cache-v2';
+const CACHE_NAME = 'vitalpet-cache-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -26,7 +26,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[VitalPet SW] Removing old cache:', key);
+            console.log('[VitalPet SW] Deleting stale cache:', key);
             return caches.delete(key);
           }
         })
@@ -36,6 +36,25 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+
+  // Network-first for translations and scripts to prevent stale i18n
+  if (url.includes('translations.json') || url.includes('app.js')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first for other static assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -51,7 +70,6 @@ self.addEventListener('fetch', (event) => {
         });
         return networkResponse;
       }).catch(() => {
-        // Fallback for HTML documents
         if (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html')) {
           return caches.match('./index.html');
         }
