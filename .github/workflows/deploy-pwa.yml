@@ -1,0 +1,55 @@
+name: Deploy VitalPet PWA to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pwa/**'
+      - '.github/workflows/deploy-pwa.yml'
+  workflow_dispatch:
+
+# Permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  deploy-pwa:
+    name: Deploy PWA to Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate 8 Languages
+        run: python scripts/validate_languages.py
+
+      - name: Sync Master Translations to PWA
+        run: cp app/src/main/assets/translations.json pwa/translations.json
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload PWA Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './pwa'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

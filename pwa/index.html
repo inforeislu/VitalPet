@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VitalPet — Gestão Nutricional e Clínica Veterinária</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#00695C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body class="theme-auto">
+  <div class="app-container">
+    
+    <!-- Sidebar (Desktop / Tablet) -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="./icons/icon-192.png" alt="VitalPet Logo">
+        </div>
+        <div>
+          <span class="brand-title">VitalPet</span>
+          <span class="brand-badge">PWA</span>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li>
+          <a class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span data-i18n="Painel">Painel</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="pets" onclick="switchTab('pets')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            <span data-i18n="Meus Pets">Meus Pets</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="weight" onclick="switchTab('weight')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-3 3"/></svg>
+            <span data-i18n="Curva de Peso">Curva de Peso</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="symptoms" onclick="switchTab('symptoms')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span data-i18n="Diário de Sintomas">Diário de Sintomas</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="walks" onclick="switchTab('walks')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="M10 22l4-10-3-4 5-3"/></svg>
+            <span data-i18n="Passeios">Passeios</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="calculator" onclick="switchTab('calculator')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>
+            <span data-i18n="Calculadora Nutricional">Calculadora WSAVA</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="emergency" onclick="switchTab('emergency')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span data-i18n="Protocolos de Emergência">Emergências</span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" data-tab="sync" onclick="switchTab('sync')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-i18n="Sincronização">Backup & Sync</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase;" data-i18n="Idioma">Idioma</label>
+        <select id="language-select" class="lang-selector"></select>
+      </div>
+    </aside>
+
+    <!-- Main App Body -->
+    <main class="main-wrapper">
+      <header class="top-header">
+        <div class="header-title-group">
+          <h1>VitalPet Universal</h1>
+          <p data-i18n="Visão Clínica Geral">Gestão Nutricional e Clínica Veterinária</p>
+        </div>
+        <div class="header-actions">
+          <button id="pwa-install-btn" class="btn btn-primary" style="display:none;">
+            <span>⬇️</span> <span data-i18n="Instalar Aplicação">Instalar PWA</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+        
+        <!-- Tab 1: Dashboard -->
+        <section id="tab-dashboard" class="tab-page active">
+          <!-- Alertas Clínicos -->
+          <div id="dash-alerts-container" class="alerts-container"></div>
+
+          <!-- Estatísticas Globais -->
+          <div class="grid-stats">
+            <div class="stat-card">
+              <div class="stat-icon" style="background:var(--primary-soft); color:var(--primary-light);">🐾</div>
+              <div class="stat-info">
+                <h4 data-i18n="Meus Pets">Meus Pets</h4>
+                <div id="stat-total-pets" class="stat-value">0</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:var(--accent-soft); color:var(--accent);">📋</div>
+              <div class="stat-info">
+                <h4 data-i18n="Registos Totais">Registos Totais</h4>
+                <div id="stat-total-logs" class="stat-value">0</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:var(--info-soft); color:var(--info);">⚡</div>
+              <div class="stat-info">
+                <h4 data-i18n="Passeios">Passeios</h4>
+                <div id="stat-total-walks" class="stat-value">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumo de Pets -->
+          <div class="panel">
+            <div class="panel-header">
+              <h3 class="panel-title" data-i18n="Resumo por Pet">Resumo por Pet</h3>
+            </div>
+            <div id="dash-pets-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;"></div>
+          </div>
+        </section>
+
+        <!-- Tab 2: Pets View -->
+        <section id="tab-pets" class="tab-page">
+          <div class="panel-header" style="margin-bottom:20px;">
+            <h2 data-i18n="Meus Pets">Meus Pets</h2>
+          </div>
+          <div id="pets-list-container"></div>
+        </section>
+
+        <!-- Tab 3: Weight Evolution -->
+        <section id="tab-weight" class="tab-page">
+          <div class="split-layout">
+            <div class="panel">
+              <h3 class="panel-title" style="margin-bottom:12px;" data-i18n="Selecionar Pet">Selecionar Pet</h3>
+              <div id="weight-pet-chips" class="pet-chips-list"></div>
+              <button class="btn btn-primary" style="width:100%;" onclick="openModal('modal-add-weight')">
+                <span>+</span> <span data-i18n="Novo Registo de Peso">Novo Registo de Peso</span>
+              </button>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title"><span id="weight-pet-name">Pet</span> — <span data-i18n="Curva de Peso">Curva de Peso</span></h3>
+              </div>
+              <div class="chart-container">
+                <svg id="weight-chart-svg" class="chart-svg"></svg>
+              </div>
+              <h4 style="margin:20px 0 10px; font-size:14px;" data-i18n="Histórico Clínico">Histórico Clínico</h4>
+              <div id="weight-logs-list" class="timeline-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 4: Symptom Journal -->
+        <section id="tab-symptoms" class="tab-page">
+          <div class="split-layout">
+            <div class="panel">
+              <h3 class="panel-title" style="margin-bottom:12px;" data-i18n="Selecionar Pet">Selecionar Pet</h3>
+              <div id="symptoms-pet-chips" class="pet-chips-list"></div>
+              <button class="btn btn-primary" style="width:100%;" onclick="openModal('modal-add-symptom')">
+                <span>+</span> <span data-i18n="Registar Sintoma">Registar Sintoma</span>
+              </button>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title"><span id="symptoms-pet-name">Pet</span> — <span data-i18n="Diário de Sintomas">Diário Clínico</span></h3>
+              </div>
+              <div id="symptoms-logs-list" class="timeline-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 5: Walks View -->
+        <section id="tab-walks" class="tab-page">
+          <div class="split-layout">
+            <div class="panel">
+              <h3 class="panel-title" style="margin-bottom:12px;" data-i18n="Selecionar Pet">Selecionar Pet</h3>
+              <div id="walks-pet-chips" class="pet-chips-list"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title"><span id="walks-pet-name">Pet</span> — <span data-i18n="Histórico de Passeios">Histórico de Passeios</span></h3>
+              </div>
+              <div id="walks-logs-list" class="timeline-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 6: Nutritional Calculator WSAVA -->
+        <section id="tab-calculator" class="tab-page">
+          <div class="split-layout">
+            <div class="panel">
+              <h3 class="panel-title" style="margin-bottom:16px;" data-i18n="Calculadora Nutricional">Parâmetros WSAVA</h3>
+              <div class="form-group" style="margin-bottom:12px;">
+                <label data-i18n="Peso Atual">Peso (kg)</label>
+                <input id="calc-weight" type="number" step="0.1" class="form-input" value="10" oninput="recomputeNutrition()">
+              </div>
+              <div class="form-group" style="margin-bottom:12px;">
+                <label data-i18n="Espécie">Espécie</label>
+                <select id="calc-species" class="form-select" onchange="recomputeNutrition()">
+                  <option value="DOG">Cão (Canino)</option>
+                  <option value="CAT">Gato (Felino)</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:12px;">
+                <label data-i18n="Estado Reprodutivo">Estado Fisiológico</label>
+                <select id="calc-stage" class="form-select" onchange="recomputeNutrition()">
+                  <option value="MAINTENANCE">Adulto Manutenção</option>
+                  <option value="WEIGHT_LOSS">Perda de Peso (Obesidade)</option>
+                  <option value="PUPPY">Cachorro / Filhote</option>
+                  <option value="SENIOR">Sénior / Geriátrico</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:12px;">
+                <label data-i18n="Esterilizado">Esterilizado?</label>
+                <select id="calc-neutered" class="form-select" onchange="recomputeNutrition()">
+                  <option value="true">Sim (Castrado)</option>
+                  <option value="false">Não (Inteiro)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label data-i18n="Densidade Calórica da Ração (kcal/kg)">Densidade Ração (kcal/kg)</label>
+                <input id="calc-kcal" type="number" class="form-input" value="3750" oninput="recomputeNutrition()">
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 class="panel-title" style="margin-bottom:16px;" data-i18n="Resultado Metabólico WSAVA">Resultado Metabólico WSAVA</h3>
+              <div class="grid-stats">
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h4>RER (Basal)</h4>
+                    <div id="calc-rer-val" class="stat-value" style="color:var(--primary-light);">--</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h4>Fator DER</h4>
+                    <div id="calc-factor-val" class="stat-value" style="color:var(--accent);">--</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h4>DER Total</h4>
+                    <div id="calc-der-val" class="stat-value" style="color:#66BB6A;">--</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-info">
+                    <h4>Dose Diária Recomendada</h4>
+                    <div id="calc-grams-val" class="stat-value" style="color:#29B6F6;">--</div>
+                  </div>
+                </div>
+              </div>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:14px;">
+                Fórmula oficial WSAVA: <code>RER = 70 × (peso em kg)^0.75</code>. Doses e multiplicadores validados pelas diretrizes globais de nutrição veterinária.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 7: Emergency Protocols -->
+        <section id="tab-emergency" class="tab-page">
+          <div class="panel">
+            <h2 style="font-size:18px; font-weight:800; color:var(--danger); margin-bottom:16px;">🚨 Protocolos de Socorro Imediato</h2>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+              <div class="log-card" style="border-left: 4px solid var(--danger);">
+                <h3 style="font-size:15px; font-weight:700; color:#EF5350;">Intoxicação / Alimentos Tóxicos</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
+                  Chocolate, uvas, cebola, alho ou xilitol. <strong>NÃO induzir o vómito</strong> se o animal ingeriu substâncias corrosivas ou estiver inconsciente.
+                </p>
+              </div>
+              <div class="log-card" style="border-left: 4px solid #FFA726;">
+                <h3 style="font-size:15px; font-weight:700; color:#FFA726;">Golpe de Calor (Hipertermia)</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
+                  Arrefeça com água fresca a morna (NUNCA água gelada). Foque nas patas, virilha e pescoço. Dirija-se imediatamente ao hospital.
+                </p>
+              </div>
+              <div class="log-card" style="border-left: 4px solid #42A5F5;">
+                <h3 style="font-size:15px; font-weight:700; color:#42A5F5;">Engasgamento</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:6px;">
+                  Abra a boca e verifique corpos estranhos visíveis. Se o animal colapsar, aplique manobra de Heimlich adaptada para cães/gatos.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 8: Backup & Sync -->
+        <section id="tab-sync" class="tab-page">
+          <div class="panel" style="max-width:600px;">
+            <h3 class="panel-title" style="margin-bottom:16px;" data-i18n="Sincronização">Sincronização e Backup Universal</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+              O VitalPet PWA é 100% compatível com a aplicação Android, iOS e Windows. Pode exportar o seu ficheiro de dados ou importar um backup gerado em qualquer dispositivo.
+            </p>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="PetStore.exportBackup()">
+                <span>⬇️</span> <span data-i18n="Exportar Backup">Exportar Backup JSON</span>
+              </button>
+              <label class="btn btn-outline" style="cursor:pointer;">
+                <span>⬆️</span> <span data-i18n="Importar Backup">Importar Backup JSON</span>
+                <input type="file" accept=".json" style="display:none;" onchange="
+                  const file = this.files[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => PetStore.importBackup(e.target.result);
+                    reader.readAsText(file);
+                  }
+                ">
+              </label>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+      <a class="mobile-nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <span>📊</span><span data-i18n="Painel">Painel</span>
+      </a>
+      <a class="mobile-nav-item" data-tab="weight" onclick="switchTab('weight')">
+        <span>📈</span><span data-i18n="Peso">Peso</span>
+      </a>
+      <a class="mobile-nav-item" data-tab="symptoms" onclick="switchTab('symptoms')">
+        <span>🩺</span><span data-i18n="Sintomas">Sintomas</span>
+      </a>
+      <a class="mobile-nav-item" data-tab="calculator" onclick="switchTab('calculator')">
+        <span>🧮</span><span>WSAVA</span>
+      </a>
+      <a class="mobile-nav-item" data-tab="sync" onclick="switchTab('sync')">
+        <span>🔄</span><span>Sync</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Modal: Novo Registo de Peso -->
+  <div id="modal-add-weight" class="modal-overlay">
+    <div class="modal-box">
+      <h3 style="font-size:16px; font-weight:700;" data-i18n="Novo Registo de Peso">Novo Registo de Peso</h3>
+      <div class="form-group">
+        <label data-i18n="Peso (kg)">Peso (kg)</label>
+        <input id="new-weight-val" type="number" step="0.05" class="form-input" placeholder="Ex: 31.8">
+      </div>
+      <div class="form-group">
+        <label data-i18n="Nota (opcional)">Nota (opcional)</label>
+        <input id="new-weight-note" type="text" class="form-input" placeholder="Ex: Pesagem na clínica">
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modal-add-weight')" data-i18n="Cancelar">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveWeightLog()" data-i18n="Guardar">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Registar Sintoma -->
+  <div id="modal-add-symptom" class="modal-overlay">
+    <div class="modal-box">
+      <h3 style="font-size:16px; font-weight:700;" data-i18n="Registar Sintoma">Registar Sintoma</h3>
+      <div class="form-group">
+        <label data-i18n="Score Fecal WSAVA">Score Fecal (1-7)</label>
+        <select id="new-fecal-score" class="form-select">
+          <option value="1">Score 1: Muito dura e seca (obstipação)</option>
+          <option value="2" selected>Score 2: Firme e bem formada (ideal)</option>
+          <option value="3">Score 3: Húmida com forma definida</option>
+          <option value="4">Score 4: Muito húmida e pastosa</option>
+          <option value="5">Score 5: Semiformada e viscosa</option>
+          <option value="6">Score 6: Pastosa sem consistência</option>
+          <option value="7">Score 7: Diarreia aquosa líquida</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="Episódios de Vómito">Episódios de Vómito</label>
+        <input id="new-vomiting-val" type="number" min="0" value="0" class="form-input">
+      </div>
+      <div class="form-group">
+        <label data-i18n="Apetite">Apetite</label>
+        <select id="new-appetite-val" class="form-select">
+          <option value="NORMAL" selected>Normal</option>
+          <option value="DECREASED">Diminuído</option>
+          <option value="ANOREXIC">Recusa Total</option>
+          <option value="INCREASED">Aumentado (Polifagia)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="Energia">Energia</label>
+        <select id="new-energy-val" class="form-select">
+          <option value="NORMAL" selected>Normal</option>
+          <option value="LOW">Baixa Energia</option>
+          <option value="LETHARGIC">Letárgico / Prostrado</option>
+          <option value="HIGH">Muito Ativo / Agitado</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="Consumo de Água">Consumo de Água</label>
+        <select id="new-water-val" class="form-select">
+          <option value="NORMAL" selected>Normal</option>
+          <option value="DECREASED">Diminuição (Pouca Água)</option>
+          <option value="INCREASED">Aumento Excessivo (Polidipsia)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="Notas Clínicas">Notas Clínicas</label>
+        <textarea id="new-symptom-notes" class="form-textarea" rows="2"></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+        <button class="btn btn-outline" onclick="closeModal('modal-add-symptom')" data-i18n="Cancelar">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveSymptomLog()" data-i18n="Guardar">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./js/app.js"></script>
+</body>
+</html>

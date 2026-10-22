@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_widget_card"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <!-- Header: Logo, Pet Name, Breed -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/widget_app_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/logo"
+            android:contentDescription="@string/app_name" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/widget_pet_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VitalPet"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_pet_breed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gestão Clínica"
+                android:textColor="#94A3B8"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Fasting / Health Pill -->
+        <TextView
+            android:id="@+id/widget_status_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_widget_metric"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="Saúde OK"
+            android:textColor="#14B8A6"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Metrics Row: Weight & Nutrition -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <!-- Weight Metric Box -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_widget_metric"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/widget_weight_val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-- kg"
+                android:textColor="#38BDF8"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_weight_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Peso Atual"
+                android:textColor="#94A3B8"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- Daily Calories Metric Box -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_widget_metric"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/widget_calories_val"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-- kcal"
+                android:textColor="#F59E0B"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_calories_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DER Diário"
+                android:textColor="#94A3B8"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Bottom Actions: SOS / Digital ID + Open App -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/widget_fasting_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Tocar para abrir"
+            android:textColor="#CBD5E1"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/widget_btn_sos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_widget_sos_btn"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="SOS QR"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>
