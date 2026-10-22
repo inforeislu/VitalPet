@@ -82,6 +82,33 @@ A aplicação **VitalPet** dispõe agora de suporte nativo para **Windows (Deskt
   ./gradlew :desktop:packageExe
   ```
 
+### Pacote Oficial da Microsoft Store (MSIX / APPX):
+Para publicar na **Microsoft Store** ou instalar com um clique no Windows:
+```bash
+python3 scripts/package_windows_store.py
+```
+Gera os pacotes em `desktop/build/windows-store/VitalPet.msix` e `VitalPet.appx` com manifesto `AppxManifest.xml` e todos os 9 logótipos oficiais da store.
+
+---
+
+## 🌐 Versão Web Universal & PWA (Progressive Web App)
+
+A pasta `/pwa` contém a aplicação Web Progressiva completa do **VitalPet**, compatível com qualquer navegador em Windows, Mac, Linux, iOS e Android:
+- **Funcionamento Offline**: Service Worker dedicado (`sw.js`) com cache prioritária.
+- **Instalável**: Suporte a *Add to Home Screen* e instalação no desktop.
+- **Calculadora WSAVA & Diário Clínico**: Avaliação de RER/DER, Score Fecal WSAVA (1 a 7) e alertas clínicos.
+- **Sincronização**: Importação e exportação de backups JSON compartilhados com as versões Android e Desktop.
+- **Publicação Automática**: Integrada com o **GitHub Pages** através da GitHub Action `.github/workflows/deploy-pwa.yml`.
+
+---
+
+## 🤖 GitHub Actions & Integração Contínua (CI/CD)
+
+O repositório inclui três workflows prontos para execução automática no GitHub:
+1. **`deploy-pwa.yml`**: Faz a validação dos 8 idiomas e o deploy automático da PWA no **GitHub Pages** a cada push no branch `main`.
+2. **`windows-store-package.yml`**: Compila a aplicação nativa num runner Windows 11, empacota em **MSIX/APPX**, assina digitalmente e disponibiliza o artefacto para download.
+3. **`android-ci.yml`**: Valida a conformidade das 2.143 chaves nos 8 idiomas e compila o APK de depuração do Android.
+
 ---
 
 ## 🚀 Como Compilar e Executar o Android
